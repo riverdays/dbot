@@ -143,4 +143,4 @@ async def healer(ctx):
     await ctx.send(f'*Rook gets out the dinosaur band-aids*')
 
 # Run the bot
-bot.run('-')
+bot.run('BOT_TOKEN')
