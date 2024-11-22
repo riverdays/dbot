@@ -1,146 +1,119 @@
 import discord
-from discord.ext import commands
+from discord import app_commands
+from random import randint
 
-# Create a bot instance with command prefix '!'
 intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix='!', intents=intents)
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
-# Event: Bot is ready
-@bot.event
+@client.event
 async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
-    print('Bot is ready to use!')
+    print("Bot is ready!")
+    try:
+        await tree.sync(guild=None)  # None means global sync
+        print("Synced globally")
+    except Exception as e:
+        print(e)
 
-# Command: Ping
-@bot.command()
-async def ping(ctx):
-    """Responds with the bot's latency"""
-    latency = round(bot.latency * 1000)
-    await ctx.send(f'Pong! 🏓 Score: {latency}')
-
-# Command: Hello
-@bot.command()
-async def hello(ctx):
-    """Sends a hello message"""
-    await ctx.send(f'Hello {ctx.author.display_name}! 👋')
-
-# Command: Rook
-@bot.command()
-async def rook(ctx):
-    """Responds with the bot's commands"""
-    await ctx.send(f"""Hiyas!
-* !commands - command list
-""")
-
-# Command: Commands
-@bot.command()
-async def commands(ctx):
-    """Responds with the bot's commands"""
-    await ctx.send(f"""Sure!
-* !ping - test ping
-* !news - lodestone news
-* !fr - fashion report
-* !hello - greeting
-* !beerme
-* !cheers
-* !earwiggle
-* !watermelon
-""")
-
-# Command: Fashion
-@bot.command()
-async def fr(ctx):
-    """Sends an fr message"""
-    await ctx.send(f'Right away {ctx.author.display_name}!')
+# Command: rook
+@tree.command(name="rook", description="Says hi")
+async def rook(interaction: discord.Interaction):
+    await interaction.response.send_message(f'Hiyas!')
 
 # Command: Ear
-@bot.command()
-async def earwiggle(ctx):
-    """Sends an ear message"""
-    await ctx.send(f'*wiggles ears*')
-
-# Command: Ears
-@bot.command()
-async def earwiggles(ctx):
-    """Sends an ear message"""
-    await ctx.send(f'*wiggles ears*')
+@tree.command(name="earwiggle", description="wiggles ears")
+async def earwiggle(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*wiggles ears*')
 
 # Command: Beer
-@bot.command()
-async def beerme(ctx):
-    """Sends a beer message"""
-    await ctx.send(f"""*slides you a beer*
-Cheers {ctx.author.display_name}! 🍻
+@tree.command(name="beerme", description="Passes you a beer")
+async def beerme(interaction: discord.Interaction):
+    await interaction.response.send_message(f"""*slides you a beer*
+Cheers {interaction.user.display_name}! 🍻
+""")
+
+# Command: Beer
+@tree.command(name="beerdjorick", description="Passes Djorick a beer")
+async def beerdjorick(interaction: discord.Interaction):
+    await interaction.response.send_message(f"""*slides Djorick a beer*
+Have a cold one, Mr. Bairon! 🍻
 """)
 
 # Command: Cheers
-@bot.command()
-async def cheers(ctx):
-    """Sends a beer message"""
-    await ctx.send(f"""*slides you a beer*
-Cheers {ctx.author.display_name}! 🍻
+@tree.command(name="cheers", description="Passes you a beer")
+async def cheers(interaction: discord.Interaction):
+    await interaction.response.send_message(f"""*slides you a beer*
+Cheers {interaction.user.display_name}! 🍻
 """)
 
 # Command: News
-@bot.command()
-async def news(ctx):
-    """Sends the news"""
-    await ctx.send(f"""*tosses newspaper* 🗞️
-<https://discord.com/channels/869999933934145578/870028217375940670>
+@tree.command(name="news", description="Links to the news channel")
+async def news(interaction: discord.Interaction):
+    await interaction.response.send_message(f"""*tosses newspaper* 🗞️
+[Lodestone News](<https://discord.com/channels/869999933934145578/870028217375940670>)
 """)
 
 # Command: watermelon
-@bot.command()
-async def watermelon(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Where the hell is it?*')
+@tree.command(name="watermelon", description="Watermelon")
+async def watermelon(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*Where the hell is it?*')
 
 # Command: gunblade
-@bot.command()
-async def gunblade(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Polishes a gunblade and hands it over* 💥')
+@tree.command(name="gunblade", description="Gunblade")
+async def gunblade(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*Polishes a gunblade and hands it over* 💥')
 
 # Command: treesave
-@bot.command()
-async def treesave(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Helps a miqo get out of a tree*')
-
-# Command: tree
-@bot.command()
-async def tree(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Helps a miqo get out of a tree*')
+@tree.command(name="treesave", description="Saves a kitty")
+async def treesave(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*Helps a miqo get out of a tree*')
 
 # Command: smiles
-@bot.command()
-async def smiles(ctx):
-    """Sends a wm message"""
-    await ctx.send(f"""*Gives everyone a smile* 
+@tree.command(name="smiles", description="Smiles")
+async def smiles(interaction: discord.Interaction):
+    await interaction.response.send_message(f"""*Gives everyone a smile* 
 Rook is on the job!
 """)
 
 # Command: rock
-@bot.command()
-async def rock(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Gives Tiny Kitty a rock to snack on* 🪨')
+@tree.command(name="rock", description="Feed Tiny Kitty")
+async def rock(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*Gives Tiny Kitty a rock to snack on* 🪨')
 
-# Command: effort
-@bot.command()
-async def effort(ctx):
-    """Sends a wm message"""
-    await ctx.send(f"""*Rook gives maximum effort!*
-HNNNGGAAAHHH!
-""")
+# Command: heal
+@tree.command(name="heal", description="Heals")
+async def heal(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*Gets out the dinosaur band-aids* 🩹')
 
-# Command: healer
-@bot.command()
-async def healer(ctx):
-    """Sends a wm message"""
-    await ctx.send(f'*Rook gets out the dinosaur band-aids*')
+# Command: morb
+@tree.command(name="morbol", description="Releases some morbols")
+async def morbol(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*{randint(1,100)} morbols released from the FC chest*')
 
-# Run the bot
-bot.run('BOT_TOKEN')
+# Command: incin
+@tree.command(name="incinerate", description="Incinerates some morbols")
+async def incinerate(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*{randint(2,100)} morbols incinerated* :fire:')
+
+# Command: burn
+@tree.command(name="burn", description="Incinerates some morbols")
+async def burn(interaction: discord.Interaction):
+    await interaction.response.send_message(f'*{randint(2,100)} morbols incinerated* :fire:')
+
+# Command: nap
+@tree.command(name="nap", description="Naps")
+async def nap(interaction: discord.Interaction):
+    await interaction.response.send_message(f':sleeping: zzz...')
+
+# Command: evolve
+#@tree.command(name="evolve", description="Evolve")
+#async def nap(interaction: discord.Interaction):
+#    await interaction.response.send_message(f"""*...? Rook is evolving!* 
+#...
+#...
+#...!
+#Rook forgot ! commands.
+#Rook learned / commands!
+#""")
+
+client.run('BOT_TOKEN')
