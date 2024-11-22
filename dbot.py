@@ -123,6 +123,6 @@ from dotenv import load_dotenv, dotenv_values
 # loading variables from .env file
 load_dotenv()
 
-BOT_TOKEN = print(os.getenv("MY_KEY"))
+BOT_TOKEN = print(os.getenv("BOT_TOKEN"))
 
 client.run('BOT_TOKEN')
